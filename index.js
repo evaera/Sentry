@@ -1,5 +1,11 @@
 const Discord = require('discord.js');
 
+const ignoreRoles = [
+	"150093661231775744", // Server Moderator
+	"150075195971862528", // Bot
+	"219302502867271690", // Bot Bypass
+];
+
 const bot = new Discord.Client();
 
 const time = () => (new Date()).getTime();
@@ -64,8 +70,14 @@ bot.on('message', message => {
 	
 	let author = message.author.id;
 	
-	if (author === bot.user.id || author === "240413107850182656") {
+	if (author === bot.user.id) {
 		return;
+	}
+
+	for (let role of ignoreRoles) {
+		if (message.member.roles.has(role)) {
+			return;
+		}
 	}
 	
 	checkTooFast(author, message);
