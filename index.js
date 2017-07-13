@@ -64,7 +64,7 @@ bot.on('message', message => {
 	
 	let author = message.author.id;
 	
-	if (author === bot.user.id) {
+	if (author === bot.user.id || author === "240413107850182656") {
 		return;
 	}
 	
