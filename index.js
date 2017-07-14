@@ -66,7 +66,7 @@ function checkSpamMessage(author, message) {
 
 function checkFilter(message) {
 	for (let sequence of filter.anywhere) {
-		if (message.cleanContent.includes(sequence)) {
+		if (message.cleanContent.toLowerCase().includes(sequence.toLowerCase())) {
 			return true;
 		}
 	}
