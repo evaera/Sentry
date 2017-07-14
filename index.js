@@ -67,7 +67,6 @@ function checkSpamMessage(author, message) {
 function checkFilter(message) {
 	for (let sequence of filter.anywhere) {
 		if (message.cleanContent.includes(sequence)) {
-			console.log('2');
 			return true;
 		}
 	}
@@ -76,7 +75,6 @@ function checkFilter(message) {
 	for (let word of words) {
 		for (let badWord of filter.words) {
 			if (word.toLowerCase().replace(/\W/g, '') === badWord.toLowerCase()) {
-				console.log('3');
 				return true;
 			}
 		}
@@ -117,4 +115,4 @@ setTimeout(() => {
 	messageTimes = {};
 }, 6 * 60 * 60 * 1000); // 2.16e+7
 
-bot.login('MjA3NzM0OTc4MTQwODMxNzQ0.DEm8pg.tAyt7LhgphI066l8Cj3H50ah5-o');
+bot.login('MjQwMDM3NzkxOTkwNDE1Mzcw.DEnGTQ.PYE7AF4F9_xDV3AT7Vbpfq0GUN8');
