@@ -1,5 +1,7 @@
 const Discord = require('discord.js');
 const filter = require('./filter.json');
+const fs = require('fs');
+const path = require('path');
 
 const ignoreRoles = [
 	"150093661231775744", // Server Moderator
@@ -83,12 +85,63 @@ function checkFilter(message) {
 	return false;
 }
 
+function writeFilter() {
+	fs.writeFile(path.join(__dirname, "filter.json"), JSON.stringify(filter), () => {});
+}
+
+function processCommand(message) {
+	let args = message.cleanContent.split(' ');
+	let command = args.shift();
+	let predicate = args.join(' ');
+
+	switch(command) {
+		case "anywhere":
+			filter.anywhere.push(predicate);
+			message.reply(`Added \`${predicate}\` to list *anywhere*.`);
+			writeFilter();
+			break;
+		case "word":
+			filter.words.push(predicate);
+			message.reply(`Added \`${predicate}\` to list *anywhere*.`);
+			writeFilter();
+			break;
+		case "dump":
+			let output = "***FILTER***\n\n**Anywhere**\n\n";
+			for (let word of filter.anywhere) {
+				output += `\`${word}\`\n`;
+			}
+			output += "\n**Words**\n\n";
+			for (let word of filter.words) {
+				output += `\`${word}\`\n`;
+			}
+			message.channel.send(output, {split: true});
+			break;
+		case "remove":
+			if (filter.anywhere.indexOf(predicate) > -1) {
+				filter.anywhere.splice(filter.anywhere.indexOf(predicate), 1);
+			}
+
+			if (filter.words.indexOf(predicate) > -1) {
+				filter.words.splice(filter.words.indexOf(predicate), 1);
+			}
+
+			writeFilter();
+
+			message.reply(`Removed word \`${predicate}\` from both lists.`);
+			break;
+	}
+}
+
 bot.on('message', message => {
+	let author = message.author.id;
+
 	if (!message.guild) {
+		if (author === "113691352327389188") {
+			processCommand(message);
+		}
+
 		return;
 	}
-	
-	let author = message.author.id;
 	
 	if (author === bot.user.id) {
 		return;
@@ -115,4 +168,8 @@ setTimeout(() => {
 	messageTimes = {};
 }, 6 * 60 * 60 * 1000); // 2.16e+7
 
-bot.login('MjQwMDM3NzkxOTkwNDE1Mzcw.DEnGTQ.PYE7AF4F9_xDV3AT7Vbpfq0GUN8');
+if (fs.existsSync('DEVELOPMENT')) {
+	bot.login('MjA3NzM0OTc4MTQwODMxNzQ0.DEq36g.pcpfq__--gBtEvvsaSaiVI8pYH4');
+} else {
+	bot.login('MjQwMDM3NzkxOTkwNDE1Mzcw.DEnGTQ.PYE7AF4F9_xDV3AT7Vbpfq0GUN8');
+}
