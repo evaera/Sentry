@@ -1,4 +1,5 @@
 const Discord = require('discord.js');
+const filter = require('./filter.json');
 
 const ignoreRoles = [
 	"150093661231775744", // Server Moderator
@@ -63,6 +64,31 @@ function checkSpamMessage(author, message) {
 	}
 }
 
+function checkFilter(message) {
+	for (let character of filter.characters.split('')) {
+		if (message.cleanContent.includes(character)) {
+			return true;
+		}
+	}
+
+	for (let sequence of filter.anywhere) {
+		if (message.cleanContent.includes(sequence)) {
+			return true;
+		}
+	}
+
+	let words = message.cleanContent.split(' ');
+	for (let word of words) {
+		for (let badWord of filter.words) {
+			if (word.toLowerCase().replace(/\W/g, '') === badWord.toLowerCase()) {
+				return true;
+			}
+		}
+	}
+
+	return false;
+}
+
 bot.on('message', message => {
 	if (!message.guild) {
 		return;
@@ -83,6 +109,10 @@ bot.on('message', message => {
 	checkTooFast(author, message);
 	
 	checkSpamMessage(author, message);
+
+	if (checkFilter(message)) {
+		message.delete();
+	}
 });
 
 setTimeout(() => {
