@@ -111,6 +111,7 @@ bot.on('message', message => {
 	checkSpamMessage(author, message);
 
 	if (checkFilter(message)) {
+		console.log(`${message.member.displayName}: ${message.cleanContent}`);
 		message.delete();
 	}
 });
