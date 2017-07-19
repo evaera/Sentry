@@ -3,6 +3,8 @@ const filter = require('./filter.json');
 const fs = require('fs');
 const path = require('path');
 
+const VaeBotUtil = require('./VaeBotUtil');
+
 const ignoreRoles = [
 	"150093661231775744", // Server Moderator
 	"150075195971862528", // Bot
@@ -156,6 +158,10 @@ function processMessage(message) {
 	checkTooFast(author, message);
 	
 	checkSpamMessage(author, message);
+
+	if (VaeBotUtil.isSpam(message.cleanContent)) {
+		message.channel.send(`;mute ${message.author.id} Spamming \`${message.cleanContent.substring(0, 200)}\``)
+	}
 
 	if (checkFilter(message)) {
 		console.log(`${message.member.displayName}: ${message.cleanContent}`);
