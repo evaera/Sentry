@@ -132,7 +132,7 @@ function processCommand(message) {
 	}
 }
 
-bot.on('message', message => {
+function processMessage(message) {
 	let author = message.author.id;
 
 	if (!message.guild) {
@@ -161,12 +161,15 @@ bot.on('message', message => {
 		console.log(`${message.member.displayName}: ${message.cleanContent}`);
 		message.delete();
 	}
-});
+}
+
+bot.on('message', processMessage);
+bot.on('messageUpdate', (oldMessage, newMessage) => processMessage(newMessage));
 
 setTimeout(() => {
 	lastMessage = {};
 	messageTimes = {};
-}, 6 * 60 * 60 * 1000); // 2.16e+7
+}, 6 * 60 * 60 * 1000);
 
 if (fs.existsSync('DEVELOPMENT')) {
 	bot.login('MjA3NzM0OTc4MTQwODMxNzQ0.DEq36g.pcpfq__--gBtEvvsaSaiVI8pYH4');
