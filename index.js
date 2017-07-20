@@ -104,7 +104,7 @@ function processCommand(message) {
 			break;
 		case "word":
 			filter.words.push(predicate);
-			message.reply(`Added \`${predicate}\` to list *anywhere*.`);
+			message.reply(`Added \`${predicate}\` to list *words*.`);
 			writeFilter();
 			break;
 		case "dump":
