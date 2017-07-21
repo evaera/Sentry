@@ -11,6 +11,11 @@ const ignoreRoles = [
 	"219302502867271690", // Bot Bypass
 ];
 
+const ignoreChannels = [
+	"150075910341525504",
+	"150250250471342080"
+];
+
 const bot = new Discord.Client();
 
 const time = () => (new Date()).getTime();
@@ -151,6 +156,12 @@ function processMessage(message) {
 
 	for (let role of ignoreRoles) {
 		if (message.member.roles.has(role)) {
+			return;
+		}
+	}
+
+	for (let channel of ignoreChannels) {
+		if (message.channel.id === channel) {
 			return;
 		}
 	}
