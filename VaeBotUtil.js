@@ -24,7 +24,7 @@ function simplifyStr(str) {
 
 exports.isSpam = function (content) {
     if (exports.getLines2(content).length >= 500) return true;
-    content = content.replace(/<(?:.|\n)*?>/gm, '');
+    content = content.replace(/<(?:.|\n)*?>/gm, '<>');
 
     const pattern = /\S+/g;
     const matches = content.match(pattern);
