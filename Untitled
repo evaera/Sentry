@@ -1,0 +1,46 @@
+writeFilter() {
+		fs.writeFile(path.join(__dirname, "filter.json"), JSON.stringify(filter), () => {});
+	}
+	
+	processCommand(message) {
+		let args = message.cleanContent.split(' ');
+		let command = args.shift();
+		let predicate = args.join(' ');
+	
+		switch(command) {
+			case "anywhere":
+				filter.anywhere.push(predicate);
+				message.reply(`Added \`${predicate}\` to list *anywhere*.`);
+				writeFilter();
+				break;
+			case "word":
+				filter.words.push(predicate);
+				message.reply(`Added \`${predicate}\` to list *words*.`);
+				writeFilter();
+				break;
+			case "dump":
+				let output = "***FILTER***\n\n**Anywhere**\n\n";
+				for (let word of filter.anywhere) {
+					output += `\`${word}\`\n`;
+				}
+				output += "\n**Words**\n\n";
+				for (let word of filter.words) {
+					output += `\`${word}\`\n`;
+				}
+				message.channel.send(output, {split: true});
+				break;
+			case "remove":
+				if (filter.anywhere.indexOf(predicate) > -1) {
+					filter.anywhere.splice(filter.anywhere.indexOf(predicate), 1);
+				}
+	
+				if (filter.words.indexOf(predicate) > -1) {
+					filter.words.splice(filter.words.indexOf(predicate), 1);
+				}
+	
+				writeFilter();
+	
+				message.reply(`Removed word \`${predicate}\` from both lists.`);
+				break;
+		}
+	}
