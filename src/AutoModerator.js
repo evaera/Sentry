@@ -1,8 +1,9 @@
 const filter = require('../data/filter.json');
 const fs = require('fs');
 const path = require('path');
-
+const {time} = require('./Util');
 const VaeBotUtil = require('./VaeBotUtil');
+const Person = require('./Person.js');
 
 const ignoreRoles = [
 	"150093661231775744", // Server Moderator
@@ -14,8 +15,6 @@ const ignoreChannels = [
 	"150075910341525504", // some random channel eryn didn't bother to describe
 	"150250250471342080" // this one too
 ];
-
-const time = () => (new Date()).getTime();
 
 module.exports = 
 class AutoModerator {
@@ -30,7 +29,7 @@ class AutoModerator {
 		}, 6 * 60 * 60 * 1000);
 	}
 	
-	checkTooFast(author, message) {
+	async checkTooFast(author, message) {
 		if (this.messageTimes[author] == undefined) {
 			this.messageTimes[author] = [];
 		}
@@ -50,20 +49,22 @@ class AutoModerator {
 			}
 			
 			if (mute) {
-				message.channel.send(`;mute ${author} [Automated System Mute] You are sending messages too quickly! (more than 10 messages in 10 seconds!)`);
+				let person = await Person.new(author);
+				person.mute("Automatic Spam Detection:\nYou are sending messages too quickly! (more than 10 messages in 10 seconds!)", Sentry.bot.user.id);
 				this.messageTimes[author] = [];
 			}
 		}
 	}
 	
-	checkSpamMessage(author, message) {
+	async checkSpamMessage(author, message) {
 		let id = `${author}~${message.cleanContent}`;
 		
 		if (this.lastMessage[id] != undefined && this.lastMessage[id].text === message.cleanContent && time() - this.lastMessage[id].time < 15000) {
 			this.lastMessage[id].times++;
 			
 			if (this.lastMessage[id].times >= 5) {
-				message.channel.send(`;mute ${author} [Automated System Mute] Spamming \`${this.lastMessage[id].text}\``);
+				let person = await Person.new(author);
+				person.mute({text: "Automatic Spam Detection:", evidence: this.lastMessage[id].text}, Sentry.bot.user.id, message.channel);
 				
 				for (let key of Object.keys(this.lastMessage)) {
 					if (key.match(/^(\d+)~/)[1] === author) {
@@ -99,10 +100,10 @@ class AutoModerator {
 		return false;
 	}
 	
-	processMessage(message) {
+	async processMessage(message) {
 		let author = message.author.id;
 		
-		if (author === this.bot.user.id) {
+		if (author === this.bot.user.id || !message.guild) {
 			return;
 		}
 	
@@ -123,7 +124,8 @@ class AutoModerator {
 		this.checkSpamMessage(author, message);
 	
 		if (VaeBotUtil.isSpam(message.cleanContent)) {
-			message.channel.send(`;mute ${message.author.id} Spamming \`${message.cleanContent.substring(0, 200)}\``)
+			let person = await Person.new(author);
+			person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
 		}
 	
 		if (this.checkFilter(message)) {

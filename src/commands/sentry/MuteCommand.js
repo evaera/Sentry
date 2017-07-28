@@ -31,6 +31,13 @@ class MuteCommand extends Command {
 		msg.reply(`Muting ${args.user} for ${args.reason}`);
 		
 		let person = await Person.new(args.user.id);
-		person.mute(args.reason, msg.member.id);
+		if (!person) {
+			return msg.reply("An error occurred");
+		}
+		person.mute(args.reason, msg.member.id, msg.channel);
+
+		if (args.reason.includes("http://") === false && args.reason.includes("https://") === false) {
+			msg.author.send(`You have muted ${person.member.displayName} without evidence!`);
+		}
 	}
 }
