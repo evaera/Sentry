@@ -40,6 +40,8 @@ class VoiceMuteCommand extends Command {
 			msg.delete();
 		}
 		
-		msg.delete();
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
 	}
 }
