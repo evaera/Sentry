@@ -96,7 +96,7 @@ class Person {
 			title: "Your voice-mute session is over.",
 			color: 0x2ecc71,
 			description: "You may now use your microphone.",
-		}});
+		}}).catch(()=>{});
 	}
 	
 	async voiceMute(reason, who, channel) {
@@ -120,7 +120,7 @@ class Person {
 			fields: [
 				{ name: "Length", value: "10 minutes", inline: true },
 			]
-		}});
+		}}).catch(()=>{});
 		
 		Sentry.log({
 			type: "muteVoice",
@@ -185,7 +185,7 @@ class Person {
 				{ name: "Length", value: muteLengthText, inline: true },
 				{ name: "Times muted", value: allMutes.length, inline: true },
 			]
-		}});
+		}}).catch(()=>{});
 
 		if (channelToClear) {
 			try {
@@ -255,7 +255,7 @@ class Person {
 				title: "You've been unmuted early by a moderator.",
 				color: 0x2ecc71,
 				description: "Welcome back.",
-			}});
+			}}).catch(()=>{});
 			
 			Sentry.log({
 				type: "unmuteManual",
@@ -267,7 +267,7 @@ class Person {
 				title: "Your mute period has ended.",
 				color: 0x2ecc71,
 				description: "Welcome back to the community. Please try to follow the rules in the future.",
-			}});
+			}}).catch(()=>{});
 		}
 	}
 	
