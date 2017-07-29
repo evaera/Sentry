@@ -12,12 +12,12 @@ class MuteCommand extends Command {
 			args: [
 				{
 					key: 'user',
-					prompt: 'User',
+					prompt: 'The user to be muted:',
 					type: 'member'
 				},
 				{
 					key: 'reason',
-					prompt: 'Reason',
+					prompt: 'Please enter a reason:',
 					type: 'string',
 					infinite: true
 				}
@@ -28,12 +28,15 @@ class MuteCommand extends Command {
 	async run(msg, args) {
 		args.reason = args.reason.join(' ');
 		
-		msg.reply(`Muting ${args.user} for ${args.reason}`);
-		
 		let person = await Person.new(args.user.id);
 		if (!person) {
 			return msg.reply("An error occurred");
 		}
+		
+		if (await person.isMuted()) {
+			return msg.author.send(`\`${args.user.displayName}\` is already muted!`);
+		}
+		
 		person.mute(args.reason, msg.member.id, msg.channel);
 
 		if (args.reason.includes("http://") === false && args.reason.includes("https://") === false) {

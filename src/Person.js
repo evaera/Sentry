@@ -3,7 +3,7 @@ const {time} = require('./Util');
 module.exports =
 class Person {
 	constructor(id) {
-		this.id = id;
+		this.id = id; // shayne was here
 	}
 	
 	static async new(id) {
@@ -45,6 +45,24 @@ class Person {
 		}
 		return false;
 	}
+	
+	async isVoiceMuted() {
+		let document = await this.getDocument();
+		if (document.voice_muted > 0) {
+			return true;
+		}
+		return false;
+	}
+	
+	async numVoiceMutes() {
+		let document = await this.getDocument();
+		return document.num_voice_mutes;
+	}
+	
+	async getMuteHistory() {
+		let document = await this.getDocument();
+		return document.mutes;
+	}
 
 	async getDocument() {
 		let document = await Sentry.db.findOne({ id: this.id });
@@ -54,12 +72,61 @@ class Person {
 		}
 
 		if (typeof document.mutes === 'undefined') document.mutes = [];
+		if (typeof document.num_voice_mutes === 'undefined') document.num_voice_mutes = 0;
 
 		return document;
 	}
 
 	async setDocument(document) {
 		return await Sentry.db.update({ id: this.id }, document, { upsert: true });
+	}
+	
+	async unVoiceMute() {
+		let document = await this.getDocument();
+		delete document.voice_muted;
+		this.setDocument(document);
+		
+		this.member.setMute(false);
+		
+		this.user.send({embed:{
+			title: "Your voice-mute session is over.",
+			color: 0x2ecc71,
+			description: "You may now use your microphone.",
+		}});
+	}
+	
+	async voiceMute(reason, who, channel) {
+		let document = await this.getDocument();
+		
+		document.voice_muted = time() + 600000; // 10 minutes
+		document.num_voice_mutes++;
+		
+		this.setDocument(document);
+		
+		this.member.setMute(true);
+		
+		this.user.send({embed:{
+			title: "You've been voice-muted in the Roblox Discord server",
+			color: 0xF1C40F,
+			thumbnail: {
+				url: "http://i.imgur.com/7B2vj52.png"
+			},
+			footer: { text: "Take this time to think about what you did. You only get so many chances..." },
+			description: reason,
+			fields: [
+				{ name: "Length", value: "10 minutes", inline: true },
+			]
+		}});
+		
+		Sentry.log({
+			type: "muteVoice",
+			id: this.id,
+			modId: who,
+			reason,
+			fields: [
+				{ name: "Length", value: "10 minutes", inline: true },
+			]
+		}, channel);
 	}
 	
 	async mute(reason, who, channelToClear) {
@@ -90,6 +157,7 @@ class Person {
 		}
 
 		document.muted = time() + muteLengthMs;
+		document.voice_muted = document.muted;
 		document.mutes.push({
 			date: time(),
 			who, reason,
@@ -99,6 +167,7 @@ class Person {
 		this.setDocument(document);
 		
 		this.member.addRole(process.env.MUTED_ROLE);
+		this.member.setMute(true);
 
 		this.user.send({embed:{
 			title: "You've been muted in the Roblox Discord server",
@@ -124,9 +193,53 @@ class Person {
 				// do nothing
 			}
 		}
+		
+		Sentry.log({
+			type: "mute",
+			id: this.id,
+			modId: who,
+			reason,
+			fields: [
+				{ name: "Length", value: muteLengthText, inline: true },
+				{ name: "Times muted", value: allMutes.length, inline: true },
+			]
+		}, channelToClear);
+	}
+	
+	async removeMute(index, who, channel) {
+		let document = await this.getDocument();
+		let mute = document.mutes[index];
+		if (typeof mute === 'undefined') {
+			return false;
+		}
+		document.mutes.splice(index, 1);
+		this.setDocument(document);
+		
+		Sentry.log({
+			type: "muteRemove",
+			id: this.id,
+			modId: who,
+			fields: [
+				{ name: "Length", value: `${(mute.len / 60 / 60 / 1000).toFixed(2)} hours`, inline: true },
+				{ name: "Muted by", value: mute.who, inline: true },
+				{ name: "Reason", value: mute.reason, inline: true }
+			]
+		}, channel);
+	}
+	
+	async removeAllMutes(who, channel) {
+		let document = await this.getDocument();
+		document.mutes = [];
+		this.setDocument(document);
+		
+		Sentry.log({
+			type: "muteRemoveAll",
+			id: this.id,
+			modId: who
+		}, channel);
 	}
 
-	async unmute(byWho, early) {
+	async unmute(who, early, channel) {
 		let document = await this.getDocument();
 		delete document.muted;
 		this.setDocument(document);
@@ -139,12 +252,79 @@ class Person {
 				color: 0x2ecc71,
 				description: "Welcome back.",
 			}});
+			
+			Sentry.log({
+				type: "unmuteManual",
+				id: this.id,
+				modId: who
+			}, channel);
 		} else {
 			this.user.send({embed:{
 				title: "Your mute period has ended.",
 				color: 0x2ecc71,
 				description: "Welcome back to the community. Please try to follow the rules in the future.",
 			}});
+		}
+	}
+	
+	async kick(reason, who, ban, channel) {
+		let document = await this.getDocument();
+		
+		document.mutes.push({
+			date: time(),
+			who, reason,
+			len: 0,
+			kick: ban ? 2 : 1
+		});
+		
+		this.setDocument(document);
+		
+		if (ban) {
+			try {
+				await this.user.send({embed:{
+					title: "You have been banned from the Roblox Discord server",
+					color: 0xc0392b,
+					thumbnail: {
+						url: "http://i.imgur.com/YtSakNq.png"
+					},
+					footer: { text: "You are no longer welcome in the server." },
+					description: reason
+				}});
+			} catch (e) {
+				// do nothing
+			}
+			
+			Sentry.log({
+				type: "ban",
+				id: this.id,
+				modId: who,
+				reason
+			}, channel);
+			
+			await this.member.ban({ days: 1 });
+		} else {
+			try {
+				await this.user.send({embed:{
+					title: "You have been kicked from the Roblox Discord server",
+					color: 0xc0392b,
+					thumbnail: {
+						url: "http://i.imgur.com/YtSakNq.png"
+					},
+					footer: { text: "You may rejoin the server, but think about why you were kicked first." },
+					description: reason
+				}});
+			} catch (e) {
+				// do nothing
+			}
+			
+			Sentry.log({
+				type: "kick",
+				id: this.id,
+				modId: who,
+				reason
+			}, channel);
+			
+			await this.member.kick();
 		}
 	}
 }

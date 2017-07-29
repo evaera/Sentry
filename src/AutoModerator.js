@@ -100,8 +100,59 @@ class AutoModerator {
 		return false;
 	}
 	
+	writeFilter() {
+		fs.writeFile(path.join(__dirname, "filter.json"), JSON.stringify(filter), () => {});
+	}
+	
+	processCommand(message) {
+		let args = message.cleanContent.split(' ');
+		let command = args.shift();
+		let predicate = args.join(' ');
+	
+		switch(command) {
+			case "anywhere":
+				filter.anywhere.push(predicate);
+				message.reply(`Added \`${predicate}\` to list *anywhere*.`);
+				this.writeFilter();
+				break;
+			case "word":
+				filter.words.push(predicate);
+				message.reply(`Added \`${predicate}\` to list *words*.`);
+				this.writeFilter();
+				break;
+			case "dump":
+				let output = "***FILTER***\n\n**Anywhere**\n\n";
+				for (let word of filter.anywhere) {
+					output += `\`${word}\`\n`;
+				}
+				output += "\n**Words**\n\n";
+				for (let word of filter.words) {
+					output += `\`${word}\`\n`;
+				}
+				message.channel.send(output, {split: true});
+				break;
+			case "remove":
+				if (filter.anywhere.indexOf(predicate) > -1) {
+					filter.anywhere.splice(filter.anywhere.indexOf(predicate), 1);
+				}
+	
+				if (filter.words.indexOf(predicate) > -1) {
+					filter.words.splice(filter.words.indexOf(predicate), 1);
+				}
+	
+				this.writeFilter();
+	
+				message.reply(`Removed word \`${predicate}\` from both lists.`);
+				break;
+		}
+	}
+	
 	async processMessage(message) {
 		let author = message.author.id;
+		
+		if (!message.guild && author === process.env.OWNER_ID) {
+			this.processCommand(message);
+		}
 		
 		if (author === this.bot.user.id || !message.guild) {
 			return;
@@ -122,9 +173,14 @@ class AutoModerator {
 		this.checkTooFast(author, message);
 		
 		this.checkSpamMessage(author, message);
+		
+		let person = await Person.new(author);
+		
+		if (await person.isMuted()) {
+			message.delete();
+		}
 	
 		if (VaeBotUtil.isSpam(message.cleanContent)) {
-			let person = await Person.new(author);
 			person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
 		}
 	

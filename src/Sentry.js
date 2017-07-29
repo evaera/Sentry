@@ -91,10 +91,94 @@ class Sentry {
 			let person = await Person.new(document.id);
 			if (person) await person.unmute(this.bot.user.id, false);
 		}
+		
+		documents = await this.db.find({ voice_muted: { $lte: time() } });
+
+		if (documents === null) {
+			return;
+		}
+
+		for (let document of documents) {
+			let person = await Person.new(document.id);
+			if (person) await person.unVoiceMute(this.bot.user.id, false);
+		}
 	}
 
 	async log(action, channel) {
-
+		let logChannel = process.env.LOG_MUTES;
+		
+		action.username = "*no name*";
+		if (!action.fields) action.fields = [];
+		
+		let user = await Person.new(action.id);
+		if (user) action.username = user.member.displayName;
+		
+		let mod = await Person.new(action.modId);
+		if (mod) action.modname = mod.member.displayName;
+		
+		switch (action.type) {
+			case "mute":
+				action.color = 0xE74C3C;
+				action.title = `<${action.username}> has been muted`;
+				action.icon  = "http://i.imgur.com/yJFp4bQ.png";
+				break;
+			case "muteVoice":
+				action.color = 0xF1C40F;
+				action.title = `<${action.username}> has been voice-muted`;
+				action.icon  = "http://i.imgur.com/7B2vj52.png";
+				break;
+			case "muteRemove":
+				action.color = 0xf39c12;
+				action.title = `Mute removed from history of <${action.username}>`;
+				action.icon  = "http://i.imgur.com/A3RCsrj.png";
+				break;
+			case "muteRemoveAll":
+				action.color = 0xf39c12;
+				action.title = `Mute history cleared: <${action.username}>`;
+				action.icon  = "http://i.imgur.com/fTuaven.png";
+				break;
+			case "unmuteManual":
+				action.color = 0x2ECC71;
+				action.title = `<${action.username}> has been unmuted`;
+				action.icon  = "http://i.imgur.com/qAYTZsm.png";
+				break;
+			case "kick":
+				logChannel = process.env.LOG_KICKS;
+				action.color = 0xECF0F1;
+				action.title = `User kicked: <${action.username}>`;
+				action.icon = "http://i.imgur.com/o9VorPw.png";
+				break;
+			case "ban":
+				logChannel = process.env.LOG_KICKS;
+				action.color = 0xECF0F1;
+				action.title = `User banned: <${action.username}>`;
+				action.icon = "http://i.imgur.com/o9VorPw.png";
+				break;
+		}
+		
+		action.fields.push({ name: "Discord ID", value: action.id });
+		action.fields.push({ name: "Name", value: action.username });
+		action.fields.push({ name: "Moderator ID", value: action.modId });
+		action.fields.push({ name: "Moderator", value: action.modname });
+		
+		for (let field of action.fields) {
+			field.inline = true;
+		}
+		
+		let embed = {
+			title: action.title,
+			color: action.color,
+			description: action.reason || action.type,
+			timestamp: new Date(),
+			fields: action.fields,
+			thumbnail: { url: action.icon }
+		};
+		
+		this.logGuild.channels.get(logChannel).send({embed});
+		
+		if (channel && channel.id === process.env.STAFF_COMMANDS_CHANNEL) {
+			channel.send({embed});
+		}
 	}
 
 	hookUpLogEvents() {
@@ -112,11 +196,20 @@ class Sentry {
 				message = `**${newMember.displayName}** leaves <#${oldMember.voiceChannelID}>`;
 			} else if (!oldMember.voiceChannel && newMember.voiceChannel) {
 				message = `**${newMember.displayName}** joins <#${newMember.voiceChannelID}>`;
-			} else if (oldMember.voiceChannel && newMember.voiceChannel) {
+			} else if (oldMember.voiceChannel && newMember.voiceChannel && oldMember.voiceChannelID !== newMember.voiceChannelID) {
 				message = `**${newMember.displayName}** moves to <#${newMember.voiceChannelID}>`;
 			}
 
 			this.logGuild.channels.get(process.env.LOG_VOICE).send(message).catch(()=>{});
+			
+			if (newMember.voiceChannel && message !== "") {
+				(async function() {
+					let person = await Person.new(newMember.user.id);
+					if (!person) return;
+					
+					person.member.setMute(await person.isVoiceMuted());
+				})();
+			}
 		});
 
 		this.bot.on('messageDelete', message => {

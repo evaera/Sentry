@@ -6,7 +6,7 @@ class UnmuteCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'unmute',
-			aliases: [],
+			aliases: ['allowtospeak'],
 			description: "Unmutes ze user",
 			
 			args: [
@@ -24,6 +24,14 @@ class UnmuteCommand extends Command {
 		if (!person) {
 			return msg.reply("An error occurred");
 		}
-		person.unmute(msg.member.id, true);
+		if (await person.isMuted()) {
+			person.unmute(msg.member.id, true, msg.channel);
+			if (await person.isVoiceMuted()) person.unVoiceMute();
+		} else if (await person.isVoiceMuted()) {
+			person.unVoiceMute();
+			msg.reply("Removed voice mute from user.");
+		} else {
+			msg.reply("That user isn't muted.");
+		}
 	}
 }
