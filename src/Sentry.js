@@ -144,6 +144,9 @@ class Sentry {
 		});
 
 		this.bot.on('messageUpdate', (oldMessage, newMessage) => {
+			if (!newMessage.member || !newMessage.member.displayName) {
+				return;
+			}
 			this.logGuild.channels.get(process.env.LOG_CHAT).send({embed:{
 				color: 0xf1c40f,
 				timestamp: new Date(),
