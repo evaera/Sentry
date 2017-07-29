@@ -33,5 +33,7 @@ class UnmuteCommand extends Command {
 		} else {
 			msg.reply("That user isn't muted.");
 		}
+		
+		msg.delete();
 	}
 }
