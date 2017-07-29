@@ -39,6 +39,10 @@ class MuteCommand extends Command {
 		
 		person.mute(args.reason, msg.member.id, msg.channel);
 
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
+
 		if (args.reason.includes("http://") === false && args.reason.includes("https://") === false) {
 			msg.author.send(`You have muted ${person.member.displayName} without evidence!`);
 		}

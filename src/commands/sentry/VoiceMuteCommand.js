@@ -35,5 +35,9 @@ class VoiceMuteCommand extends Command {
 			return msg.reply("An error occurred");
 		}
 		person.voiceMute(args.reason, msg.member.id, msg.channel);
+
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
 	}
 }
