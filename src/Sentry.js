@@ -114,6 +114,7 @@ class Sentry {
 		
 		let mod = await Person.new(action.modId);
 		if (mod) action.modname = mod.member.displayName;
+		if (action.modId === this.bot.user.id) action.modname = "Sentry";
 		
 		switch (action.type) {
 			case "mute":
