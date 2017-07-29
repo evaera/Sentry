@@ -70,12 +70,11 @@ class Sentry {
 			return;
 		}
 
-		reaction.message.delete();
-
 		let person = await Person.new(reaction.message.author.id);
 		if (!person) return;
 
 		if (reaction.emoji.id === process.env.MUTE_EMOJI) {
+			reaction.message.delete();
 			person.mute({ text: "Inappropriate:", evidence: reaction.message.cleanContent }, reactor.id, reaction.message.channel);
 		}
 	}
