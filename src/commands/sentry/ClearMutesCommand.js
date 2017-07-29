@@ -27,6 +27,8 @@ class ClearMutesCommand extends Command {
 
 		user.removeAllMutes(msg.author.id, msg.channel)
 		
-		msg.delete();
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
 	}
 }
