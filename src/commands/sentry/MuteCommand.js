@@ -47,6 +47,5 @@ class MuteCommand extends Command {
 			msg.author.send(`You have muted ${person.member.displayName} without evidence!`);
 		}
 		
-		msg.delete();
 	}
 }
