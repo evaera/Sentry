@@ -39,5 +39,6 @@ class BanCommand extends Command {
 		
 		kickuser.kick(args.reason, msg.member.id, false, msg.channel);
 		
+		msg.delete();
 	}
 }
