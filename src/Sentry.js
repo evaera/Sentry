@@ -40,7 +40,7 @@ class Sentry {
 		this.bot.login(process.env.TOKEN);
 
 		// Expire mutes interval
-		setInterval(this.expireMutes.bind(this), 5000);
+		setInterval(this.expireMutes.bind(this), 60000);
 	}
 	
 	onReady() {

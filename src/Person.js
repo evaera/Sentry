@@ -81,13 +81,17 @@ class Person {
 		return await Sentry.db.update({ id: this.id }, document, { upsert: true });
 	}
 	
-	async unVoiceMute() {
+	async unVoiceMute(who, skipMessage) {
 		let document = await this.getDocument();
 		delete document.voice_muted;
 		this.setDocument(document);
 		
 		this.member.setMute(false);
 		
+		if (true) {
+			return;
+		}
+
 		this.user.send({embed:{
 			title: "Your voice-mute session is over.",
 			color: 0x2ecc71,
