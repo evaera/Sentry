@@ -69,6 +69,9 @@ class HistoryCommand extends Command {
 		if (output.length > 0) {
 			msg.reply(output);
 		}
-		msg.delete();
+		
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
 	}
 }

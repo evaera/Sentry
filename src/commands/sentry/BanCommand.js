@@ -39,6 +39,8 @@ class BanCommand extends Command {
 		
 		banuser.kick(args.reason, msg.member.id, true, msg.channel);
 		
-		msg.delete();
+		if (msg.channel.id !== process.env.STAFF_COMMANDS_CHANNEL) {
+			msg.delete();
+		}
 	}
 }
