@@ -248,7 +248,7 @@ class Person {
 		delete document.muted;
 		this.setDocument(document);
 
-		this.member.removeRole(process.env.MUTED_ROLE);
+		await this.member.removeRole(process.env.MUTED_ROLE);
 
 		if (early) {
 			this.user.send({embed:{
