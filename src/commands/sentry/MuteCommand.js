@@ -46,5 +46,7 @@ class MuteCommand extends Command {
 		if (args.reason.includes("http://") === false && args.reason.includes("https://") === false) {
 			msg.author.send(`You have muted ${person.member.displayName} without evidence!`);
 		}
+		
+		msg.delete();
 	}
 }
