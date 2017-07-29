@@ -1,2 +1,4 @@
 node_modules/
-DEVELOPMENT
+.env
+data/data.db
+data/filter.json
