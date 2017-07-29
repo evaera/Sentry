@@ -36,5 +36,7 @@ class RemoveMuteCommand extends Command {
 		} else {
 			msg.reply("Invalid mute ID, make sure that you are using the number from their history.");
 		}
+		
+		msg.delete();
 	}
 }
