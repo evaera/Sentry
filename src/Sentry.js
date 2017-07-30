@@ -12,7 +12,8 @@ class Sentry {
 	constructor() {
 		this.bot = new Discord.Client({
 			unknownCommandResponse: false,
-			commandPrefix: ';'
+			commandPrefix: ';',
+			owner: ['113691352327389188', '242727621518032896']
 		});
 		
 		this.autoModerator = new AutoModerator(this.bot);
@@ -33,6 +34,13 @@ class Sentry {
 		this.bot.registry
 			.registerGroup('sentry', 'Sentry')
 			.registerDefaultTypes()
+			.registerDefaultGroups()
+			.registerDefaultCommands({
+                ping: false,
+                commandState: false,
+                prefix: false,
+                help: false
+            })
 			.registerCommandsIn(path.join(__dirname, 'commands'));
 		
 		// Login
