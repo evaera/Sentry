@@ -131,6 +131,13 @@ class Person {
 				{ name: "Length", value: "10 minutes", inline: true },
 			]
 		}, channel);
+		
+		let checks = 0;
+		while (checks <= 4) {
+			if (this.member.serverMute) break;
+			await this.member.setMute(true);
+			checks ++;
+		}
 	}
 	
 	async mute(reason, who, channelToClear) {
