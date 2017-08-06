@@ -26,6 +26,10 @@ class BanCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (!msg.member.roles.has(234520161720205312)) {
+			return msg.reply("You do not have permission to use this command");
+		}
+		
 		args.reason = args.reason.join(' ');
 		
 		let banuser = await Person.new(args.user.id);
