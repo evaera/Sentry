@@ -211,7 +211,7 @@ class Sentry {
 			this.logGuild.channels.get(process.env.LOG_VOICE).send(message).catch(()=>{});
 			
 			for (let channelId of process.env.IGNORE_VOICE_CHANNELS.split(',')) {
-				if (channelId === newMember.voiceCHannelID) {
+				if (channelId === newMember.voiceChannelID) {
 					return;
 				}
 			}
