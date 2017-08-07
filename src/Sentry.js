@@ -210,7 +210,13 @@ class Sentry {
 
 			this.logGuild.channels.get(process.env.LOG_VOICE).send(message).catch(()=>{});
 			
-			if (newMember.voiceChannel && message !== "" && newMember.voiceChannelID != "150077468043247616") {
+			for (let channelId of process.env.IGNORE_VOICE_CHANNELS.split(',')) {
+				if (channelId === newMember.voiceCHannelID) {
+					return;
+				}
+			}
+
+			if (newMember.voiceChannel && message !== "") {
 				(async function() {
 					let person = await Person.new(newMember.user.id);
 					if (!person) return;

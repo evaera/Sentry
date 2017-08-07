@@ -26,7 +26,13 @@ class BanCommand extends Command {
 	}
 
 	async run(msg, args) {
-		if (!msg.member.roles.has(234520161720205312)) {
+		let canBan = false;
+		for (let roleId of process.env.BAN_ROLES.split(',')) {
+			if (msg.member.roles.has(roleId)) {
+				canBan = true;
+			}
+		}
+		if (!canBan) {
 			return msg.reply("You do not have permission to use this command");
 		}
 		
