@@ -20,6 +20,10 @@ class HistoryCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (msg.member.roles.has('218513797659230209')) { // trial moderator
+			return msg.reply("You don't have permission to use this command. Please ask a Server Moderator to assist you.");
+		}
+
 		let histUser = await Person.new(args.user.id);
 		if (!histUser) {
 			msg.reply("An error has occured");
