@@ -180,9 +180,9 @@ class AutoModerator {
 			message.delete();
 		}
 	
-		if (VaeBotUtil.isSpam(message.cleanContent)) {
-			person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
-		}
+		// if (VaeBotUtil.isSpam(message.cleanContent)) {
+		// 	person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
+		// }
 	
 		if (this.checkFilter(message)) {
 			console.log(`${message.member.displayName}: ${message.cleanContent}`);
