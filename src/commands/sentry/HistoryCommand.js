@@ -58,7 +58,7 @@ class HistoryCommand extends Command {
 				
 			output += `Length: ${muteLength}\n`;
 			output += `Muted by: \`${mute.who}\` (\`${muterName}\`)\n`;
-			output += `Reason: \`${mute.reason}\`\n`;
+			output += `Reason: \`\`\`\n${mute.reason.replace(/`/gm, '')}\n\`\`\`\n`;
 			output += `\n`;
 			if (output.length > 1000) {
 				msg.reply(output);

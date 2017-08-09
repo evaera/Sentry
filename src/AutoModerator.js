@@ -177,16 +177,21 @@ class AutoModerator {
 		let person = await Person.new(author);
 		
 		if (await person.isMuted()) {
-			message.delete();
+			return message.delete();
 		}
 	
 		// if (VaeBotUtil.isSpam(message.cleanContent)) {
 		// 	person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
 		// }
+
+		if (message.cleanContent.replace(/(discord\.gg\/roblox)/ig, '').match(/discord\.gg\//i)) {
+			person.mute({ text: "Breaking rule #13", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
+			return message.delete();
+		}
 	
 		if (this.checkFilter(message)) {
 			console.log(`${message.member.displayName}: ${message.cleanContent}`);
-			message.delete();
+			return message.delete();
 		}
 	}
 }

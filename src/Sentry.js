@@ -254,6 +254,9 @@ class Sentry {
 			if (!newMessage.member || !newMessage.member.displayName) {
 				return;
 			}
+			if (newMessage.cleanContent === oldMessage.cleanContent) {
+				return;
+			}
 			this.logGuild.channels.get(process.env.LOG_CHAT).send({embed:{
 				color: 0xf1c40f,
 				timestamp: new Date(),
