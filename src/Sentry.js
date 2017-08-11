@@ -85,7 +85,7 @@ class Sentry {
 			reaction.message.delete();
 			person.mute({ text: `Inappropriate (#${reaction.message.channel.name}):`, evidence: reaction.message.cleanContent }, reactor.id, reaction.message.channel);
 		} else if (reaction.emoji.id === process.env.MUTE_CONTEXT_EMOJI) {
-			let messages = await reaction.message.channel.fetchMessages({limit: 100});
+			let messages = await reaction.message.channel.fetchMessages({limit: 35});
 			messages = messages.filter(message => {
 				return message.author.id === reaction.message.author.id;
 			});
