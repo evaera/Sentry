@@ -177,7 +177,7 @@ class AutoModerator {
 		let person = await Person.new(author);
 		
 		if (await person.isMuted()) {
-			if (!msg.member.roles.has(process.env.MUTED_ROLE) {
+			if (!msg.member.roles.has(process.env.MUTED_ROLE)) {
 			    msg.member.addRole(process.env.MUTED_ROLE);
 			}
 			return message.delete();
