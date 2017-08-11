@@ -83,7 +83,7 @@ class Sentry {
 
 		if (reaction.emoji.id === process.env.MUTE_EMOJI) {
 			reaction.message.delete();
-			person.mute({ text: "Inappropriate:", evidence: reaction.message.cleanContent }, reactor.id, reaction.message.channel);
+			person.mute({ text: `Inappropriate (#${reaction.message.channel.name}):`, evidence: reaction.message.cleanContent }, reactor.id, reaction.message.channel);
 		}
 	}
 
