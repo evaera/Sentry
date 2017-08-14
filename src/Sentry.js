@@ -109,7 +109,7 @@ class Sentry {
 
 		for (let document of documents) {
 			let person = await Person.new(document.id);
-			if (person) await person.unmute(this.bot.user.id, false);
+			if (person && person.isMuted()) await person.unmute(this.bot.user.id, false);
 		}
 		
 		documents = await this.db.find({ voice_muted: { $lte: time() } });
@@ -120,7 +120,7 @@ class Sentry {
 
 		for (let document of documents) {
 			let person = await Person.new(document.id);
-			if (person) await person.unVoiceMute(this.bot.user.id, false);
+			if (person && person.isVoiceMuted()) await person.unVoiceMute(this.bot.user.id, false);
 		}
 	}
 
