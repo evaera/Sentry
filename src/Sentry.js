@@ -18,7 +18,10 @@ class Sentry {
 		
 		this.autoModerator = new AutoModerator(this.bot);
 		
-		this.db = new Datastore(path.join(__dirname, '../data/data.db'));
+		this.db = new Datastore({
+			filename: path.join(__dirname, '../data/data.db'),
+			timestampData: true	
+		});
 		this.db.load();
 		
 		// Events
