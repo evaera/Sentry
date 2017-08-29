@@ -20,9 +20,14 @@ class HistoryCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (args.user.id === Sentry.bot.user.id) {
+			return msg.reply("I have a clean record, thank you for your concern.");
+		}
+		
 		let histUser = await Person.new(args.user.id);
+		
 		if (!histUser) {
-			msg.reply("An error has occured");
+			return msg.reply("An error has occured");
 		}
 			
 		let muteHist = await histUser.getMuteHistory();
