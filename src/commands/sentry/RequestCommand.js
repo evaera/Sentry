@@ -9,7 +9,7 @@ class RequestCommand extends Command {
 	constructor(client) {
 		super(client, {
 			name: 'request',
-			aliases: ['requeststaff', 'requestadmin', 'requestmod'],
+			aliases: ['requeststaff', 'requestadmin', 'requestmod', 'callmod', 'emergencyrequest', 'help', 'emergency'],
 			description: "Calls for an on duty admin",
 		});
 	}
