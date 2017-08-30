@@ -1,4 +1,5 @@
 const path = require('path');
+const fs = require('fs');
 
 const Discord = require('discord.js-commando');
 const Datastore = require('nedb-promises');
@@ -18,10 +19,7 @@ class Sentry {
 		
 		this.autoModerator = new AutoModerator(this.bot);
 		
-		this.db = new Datastore({
-			filename: path.join(__dirname, '../data/data.db'),
-			timestampData: true	
-		});
+		this.db = new Datastore(path.join(__dirname, '../data/data.db'));
 		this.db.load();
 		
 		// Events
@@ -52,6 +50,19 @@ class Sentry {
 
 		// Expire mutes interval
 		setInterval(this.expireMutes.bind(this), 60000);
+		
+		// Request system
+		this.csv = path.join(__dirname, "../data/on_duty.csv");
+		this.IDs = [];
+		this.lastrequests = {};
+		try {
+			this.IDs = fs.readFileSync(this.csv, {encoding: 'utf8'}).split(",");
+			if (typeof this.IDs === "undefined" || !this.IDs) {
+				this.IDs = [];
+			}
+		} catch (e) {
+			console.log(e);
+		}
 	}
 	
 	onReady() {
@@ -87,19 +98,6 @@ class Sentry {
 		if (reaction.emoji.id === process.env.MUTE_EMOJI) {
 			reaction.message.delete();
 			person.mute({ text: `Inappropriate (#${reaction.message.channel.name}):`, evidence: reaction.message.cleanContent }, reactor.id, reaction.message.channel);
-		} else if (reaction.emoji.id === process.env.MUTE_CONTEXT_EMOJI) {
-			let messages = await reaction.message.channel.fetchMessages({limit: 35});
-			messages = messages.filter(message => {
-				return message.author.id === reaction.message.author.id;
-			});
-			let evidence = [];
-			for (let message of messages.array().reverse()) {
-				evidence.push(message.cleanContent);
-				
-				if (evidence.join('\n').length > 1000) break;
-			}
-			reaction.message.delete();
-			person.mute({ text: `Inappropriate (#${reaction.message.channel.name}):`, evidence: evidence.join('\n') }, reactor.id, reaction.message.channel);
 		}
 	}
 

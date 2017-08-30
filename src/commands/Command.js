@@ -8,9 +8,12 @@ class Command extends Commando.Command {
 		info.memberName = info.name;
 		
 		super(client, info);
+		
+		this.name = info.name;
 	}
 
 	hasPermission(msg) {
+		if (this.name === "request") return true;
 		for (let roleId of process.env.ADMIN_ROLES.split(',')) {
 			if (msg.member.roles.has(roleId)) {
 				return true;
