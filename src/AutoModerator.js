@@ -182,6 +182,10 @@ class AutoModerator {
 			}
 			return message.delete();
 		}
+
+		if (!person.isModerator() && message.channel.id === '352581203418939395') { // verify channel
+			message.delete();
+		}
 	
 		// if (VaeBotUtil.isSpam(message.cleanContent)) {
 		// 	person.mute({ text: "Automatic Spam Detection:\nSingle message", evidence: message.cleanContent.substring(0, 200)}, Sentry.bot.user.id, message.channel);
