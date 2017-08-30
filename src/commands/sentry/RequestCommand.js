@@ -23,7 +23,7 @@ class RequestCommand extends Command {
 				
 				let notifystring = "";
 				Sentry.IDs.map(e => { if (e != '') notifystring += `<@${e}> `}); //thx eryn
-				notifystring += `| ${msg.member.nickname} requested a mod in #${msg.channel.name}`;
+				notifystring += `| <@msg.member.id}> requested a mod in <@${msg.channel.id}>`;
 				
 				msg.guild.channels.get(process.env.STAFF_COMMANDS_CHANNEL).send(notifystring);
 			} else { 
