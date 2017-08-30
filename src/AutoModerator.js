@@ -184,7 +184,9 @@ class AutoModerator {
 		}
 
 		if (!person.isModerator() && message.channel.id === '352581203418939395') { // verify channel
-			message.delete();
+			setTimeout( () => {
+				message.delete();
+			}, 1000);
 		}
 	
 		// if (VaeBotUtil.isSpam(message.cleanContent)) {
