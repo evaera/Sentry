@@ -153,6 +153,12 @@ class AutoModerator {
 		if (!message.guild && (author === process.env.OWNER_ID || author === 242727621518032896)) {
 			this.processCommand(message);
 		}
+
+		if (message.channel.id === '352581203418939395') { // verify channel
+			setTimeout( () => {
+				message.delete();
+			}, 1000);
+		}
 		
 		if (author === this.bot.user.id || !message.guild) {
 			return;
@@ -181,12 +187,6 @@ class AutoModerator {
 			    message.member.addRole(process.env.MUTED_ROLE);
 			}
 			return message.delete();
-		}
-
-		if (message.channel.id === '352581203418939395') { // verify channel
-			setTimeout( () => {
-				message.delete();
-			}, 1000);
 		}
 	
 		// if (VaeBotUtil.isSpam(message.cleanContent)) {
