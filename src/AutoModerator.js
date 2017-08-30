@@ -183,7 +183,7 @@ class AutoModerator {
 			return message.delete();
 		}
 
-		if (!person.isModerator() && message.channel.id === '352581203418939395') { // verify channel
+		if (message.channel.id === '352581203418939395') { // verify channel
 			setTimeout( () => {
 				message.delete();
 			}, 1000);
