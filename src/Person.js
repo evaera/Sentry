@@ -23,6 +23,7 @@ class Person {
 		try {
 			this.user = await Sentry.bot.fetchUser(this.id);
 			this.member = await Sentry.guild.fetchMember(this.user);
+			if (this.user.bot) return false;
 			return true;
 		} catch (e) {
 			return false;
