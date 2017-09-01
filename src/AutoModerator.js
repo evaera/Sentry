@@ -165,8 +165,10 @@ class AutoModerator {
 		}
 	
 		for (let role of ignoreRoles) {
-			if (message.member.roles.has(role)) {
-				return;
+			if (message.member.roles) {
+				if (message.member.roles.has(role)) {
+					return;
+				}
 			}
 		}
 	
