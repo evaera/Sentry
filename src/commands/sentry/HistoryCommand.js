@@ -53,6 +53,8 @@ class HistoryCommand extends Command {
 				actionType = "Kicked";
 			} else if (mute.kick && mute.kick === 2) {
 				actionType = "Banned";
+			} else if (mute.warn && mute.warn === 1) {
+				actionType = "Warned";
 			}
 				
 			output += `${muteHist.indexOf(mute) + 1}. **${actionType}** on ${date.toString()}\n`;
@@ -62,8 +64,8 @@ class HistoryCommand extends Command {
 			if (muter) muterName = muter.member.displayName;
 			if (muter.author.bot) muterName = `${muter.author.username} [BOT]`;
 				
-			output += `Length: ${muteLength}\n`;
-			output += `Muted by: \`${mute.who}\` (\`${muterName}\`)\n`;
+			if (actionType === "Muted") output += `Length: ${muteLength}\n`;
+			output += `${actionType} by: \`${mute.who}\` (\`${muterName}\`)\n`;
 			output += `Reason: \`\`\`\n${mute.reason.replace(/`/gm, '')}\n\`\`\`\n`;
 			output += `\n`;
 			if (output.length > 1000) {
