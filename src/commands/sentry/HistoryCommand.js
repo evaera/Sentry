@@ -62,7 +62,7 @@ class HistoryCommand extends Command {
 			let muter = await Person.new(mute.who);
 			let muterName = "*unknown*";
 			if (muter) muterName = muter.member.displayName;
-			if (muter.user.bot) muterName = `${muter.user.username} [BOT]`;
+			if (muter && muter.user && muter.user.bot) muterName = `${muter.user.username} [BOT]`;
 				
 			if (actionType === "Muted") output += `Length: ${muteLength}\n`;
 			output += `${actionType} by: \`${mute.who}\` (\`${muterName}\`)\n`;
