@@ -339,4 +339,39 @@ class Person {
 			await this.member.kick();
 		}
 	}
+	
+		async warn(reason, who, channel) {
+		let document = await this.getDocument();
+		
+		document.mutes.push({
+			date: time(),
+			who, reason,
+			len: 0,
+			warn: 1
+		});
+		
+		this.setDocument(document);
+		
+		try {
+			await this.user.send({embed:{
+				title: "You have been warned in the Roblox Discord server",
+				color: 0xFF9000,
+				thumbnail: {
+					url: "http://i.imgur.com/YtSakNq.png"
+				},
+				footer: { text: "This has been logged to your record." },
+				description: reason
+			}});
+		} catch (e) {
+			// do nothing
+		}
+			
+		Sentry.log({
+			type: "warn",
+			id: this.id,
+			modId: who,
+			reason
+		}, channel);
+	
+	}
 }
