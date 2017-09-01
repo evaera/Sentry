@@ -176,6 +176,11 @@ class Sentry {
 				action.title = `User banned: <${action.username}>`;
 				action.icon = "http://i.imgur.com/o9VorPw.png";
 				break;
+			case "warn":
+				action.color = 0xFF9000;
+				action.title = `User warned: <${action.username}>`;
+				action.icon = "http://i.imgur.com/YtSakNq.png";
+				break;
 		}
 		
 		action.fields.push({ name: "Discord ID", value: action.id });
