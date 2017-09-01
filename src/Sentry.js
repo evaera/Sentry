@@ -249,7 +249,7 @@ class Sentry {
 					{
 						name: "User",
 						inline: true,
-						value: message.member.displayName
+						value: !message.author.bot ? message.member.displayName : message.author.username + " [BOT]"
 					},
 					{
 						name: "Channel",
@@ -279,7 +279,7 @@ class Sentry {
 					{
 						name: "User",
 						inline: true,
-						value: newMessage.member.displayName
+						value: !newMessage.author.bot ? newMessage.member.displayName : newMessage.author.username + " [BOT]"
 					},
 					{
 						name: "Channel",
