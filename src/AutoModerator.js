@@ -150,7 +150,7 @@ class AutoModerator {
 	async processMessage(message) {
 		let author = message.author.id;
 		
-		if (!message.guild && (author === process.env.OWNER_ID || author === 242727621518032896)) {
+		if (!message.guild && (author === process.env.OWNER_ID || author === "242727621518032896")) {
 			this.processCommand(message);
 		}
 
@@ -163,12 +163,12 @@ class AutoModerator {
 		if (author === this.bot.user.id || !message.guild) {
 			return;
 		}
+		
+		if (message.author.bot) return;
 	
 		for (let role of ignoreRoles) {
-			if (message.member.roles) {
-				if (message.member.roles.has(role)) {
-					return;
-				}
+			if (message.member.roles.has(role)) {
+				return;
 			}
 		}
 	
