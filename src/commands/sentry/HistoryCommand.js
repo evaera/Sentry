@@ -60,6 +60,7 @@ class HistoryCommand extends Command {
 			let muter = await Person.new(mute.who);
 			let muterName = "*unknown*";
 			if (muter) muterName = muter.member.displayName;
+			if (muter.author.bot) muterName = `${muter.author.username} [BOT]`;
 				
 			output += `Length: ${muteLength}\n`;
 			output += `Muted by: \`${mute.who}\` (\`${muterName}\`)\n`;
