@@ -54,6 +54,14 @@ class Person {
 		}
 		return false;
 	}
+
+	async getVoiceMuteReason() {
+		let document = await this.getDocument();
+		if (document.voice_mute_reason) {
+			return document.voice_mute_reason;
+		}
+		return '';
+	}
 	
 	async numVoiceMutes() {
 		let document = await this.getDocument();
@@ -105,6 +113,7 @@ class Person {
 		
 		document.voice_muted = time() + 600000; // 10 minutes
 		document.num_voice_mutes++;
+		document.voice_mute_reason = `<@${who}>: ${reason}`;
 		
 		this.setDocument(document);
 		

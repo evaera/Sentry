@@ -34,7 +34,10 @@ class HistoryCommand extends Command {
 			
 		let output = `***Mute history for user \`${args.user.id}\` (\`${args.user.displayName}\`)***\n\n`;
 		output += `Currently ${await histUser.isMuted() ? 'global muted' : 'not global muted'}\n\n`;
-		output += `Currently ${await histUser.isVoiceMuted() ? 'voice-muted' : 'not voice-muted'}\n`;
+		output += `Currently ${await histUser.isVoiceMuted() ? 'voice-muted:' : 'not voice-muted'}\n`;
+		if (await histUser.isVoiceMuted()) {
+			output += 'By ' + await histUser.getVoiceMuteReason() + '\n\n';
+		}
 		output += `${await histUser.numVoiceMutes()} previous voice-mutes\n\n`;
 			
 		for (let mute of muteHist) {
