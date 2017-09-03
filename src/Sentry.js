@@ -270,8 +270,11 @@ class Sentry {
 		this.bot.on('voiceStateUpdate', (oldMember, newMember) => {
 			let message = "";
 			if (oldMember.voiceChannel && !newMember.voiceChannel) {
+				newMember.guild.channels.get(process.env.VOICE_TEXT_CHANNEL).permissionOverwrites.get(newMember.id).delete();
 				message = `**${newMember.displayName}** leaves <#${oldMember.voiceChannelID}>`;
 			} else if (!oldMember.voiceChannel && newMember.voiceChannel) {
+				newMember.guild.channels.get(process.env.VOICE_TEXT_CHANNEL).overwritePermissions(newMember.id, { READ_MESSAGES: true });
+
 				message = `**${newMember.displayName}** joins <#${newMember.voiceChannelID}>`;
 			} else if (oldMember.voiceChannel && newMember.voiceChannel && oldMember.voiceChannelID !== newMember.voiceChannelID) {
 				message = `**${newMember.displayName}** moves to <#${newMember.voiceChannelID}>`;

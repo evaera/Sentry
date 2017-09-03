@@ -349,7 +349,7 @@ class Person {
 		}
 	}
 	
-		async warn(reason, who, channel) {
+	async warn(reason, who, channel) {
 		let document = await this.getDocument();
 		
 		document.mutes.push({
