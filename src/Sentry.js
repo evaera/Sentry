@@ -308,6 +308,9 @@ class Sentry {
 			if (newMessage.cleanContent === oldMessage.cleanContent) {
 				return;
 			}
+			
+			if (oldMessage.channel.id === process.env.ADVERTISEMENT_CHANNEL && !IsValidAdvert(newMessage.cleanContent)) newMessage.delete();
+			
 			this.logGuild.channels.get(process.env.LOG_CHAT).send({embed:{
 				color: 0xf1c40f,
 				timestamp: new Date(),
