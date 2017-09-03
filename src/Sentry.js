@@ -112,7 +112,7 @@ class Sentry {
  					await newMessage.react(emoji);
  				}
  				
- 				if (Math.random() > 0.8) {
+ 				if (Math.random() > 0.95) {
  					newMessage.react('👺');
  				} else {
  					newMessage.react('😡');
