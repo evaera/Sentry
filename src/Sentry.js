@@ -4,7 +4,7 @@ const fs = require('fs');
 const Discord = require('discord.js-commando');
 const Datastore = require('nedb-promises');
 
-const {time, sleep} = require('./Util');
+const {time, sleep, IsValidAdvert} = require('./Util');
 const AutoModerator = require('./AutoModerator.js');
 const Person = require('./Person.js');
 
@@ -94,9 +94,12 @@ class Sentry {
  				}
  			});
  			
- 			if (hasPostedRecently) {
+ 			let validAdvert = IsValidAdvert(newMessage.cleanContent);
+ 			if (!validAdvert || hasPostedRecently) {
+ 				if (!hasPostedRecently) newMessage.author.send("Please do not post non-ROBLOX links in the advertisement channel.");
+ 				if (hasPostedRecently) newMessage.author.send("You may only post once every 2 hours in the advertisement channel.");
  				newMessage.delete();
- 			}
+ 			} 
 		}
 	}
 
