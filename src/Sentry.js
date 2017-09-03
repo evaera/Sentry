@@ -26,7 +26,7 @@ class Sentry {
 		
 		this.bot.on('message', message => this.autoModerator.processMessage(message));
 		this.bot.on('messageUpdate', (oldMessage, newMessage) => this.autoModerator.processMessage(newMessage));
-		// this.bot.on('message', message => this.onMessage(message));
+		this.bot.on('message', message => this.onMessage(message));
 		this.bot.on('messageReactionAdd', this.onReactionAdd.bind(this));
 		this.bot.on('ready', this.onReady.bind(this));
 		
@@ -74,14 +74,30 @@ class Sentry {
 		console.log("Sentry is ready.");
 	}
 
-	async onMessage(message) {
-		message.channel.overwritePermissions(message.author, {
-			SEND_MESSAGES: false
-		});
+	async onMessage(newMessage) {
+		// message.channel.overwritePermissions(message.author, {
+		// 	SEND_MESSAGES: false
+		// });
 
-		setTimeout(() => {
-			message.channel.overwritePermissions(message.author, {SEND_MESSAGES: null});
-		}, 5000);
+		// setTimeout(() => {
+		// 	message.channel.overwritePermissions(message.author, {SEND_MESSAGES: null});
+		// }, 5000);
+		
+		if (newMessage.channel.id === process.env.ADVERTISEMENT_CHANNEL) {
+			let messages = await newMessage.channel.fetchMessages({limit: 100});
+ 			
+ 			let hasPostedRecently = false;
+ 			
+ 			messages.map(message => {
+ 				if (message.id !== newMessage.id && message.author.id === newMessage.author.id && (new Date()).getTime() - message.createdAt.getTime() < 2 * 60 * 60 * 1000) {
+ 					hasPostedRecently = true;
+ 				}
+ 			});
+ 			
+ 			if (hasPostedRecently) {
+ 				newMessage.delete();
+ 			}
+		}
 	}
 
 	async onReactionAdd(reaction, user) {
