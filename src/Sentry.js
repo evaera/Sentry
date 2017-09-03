@@ -8,6 +8,14 @@ const {time, sleep, IsValidAdvert} = require('./Util');
 const AutoModerator = require('./AutoModerator.js');
 const Person = require('./Person.js');
 
+const ADVERT_REACTIONS = [
+	'👍', 
+	'❤', 
+	'😂',
+	'😯',
+	'😢',
+];
+
 module.exports = 
 class Sentry {
 	constructor() {
@@ -99,7 +107,17 @@ class Sentry {
  				if (!hasPostedRecently) newMessage.author.send("Please do not post non-ROBLOX links in the advertisement channel.");
  				if (hasPostedRecently) newMessage.author.send("You may only post once every 2 hours in the advertisement channel.");
  				newMessage.delete();
- 			} 
+ 			} else {
+ 				for (let emoji of ADVERT_REACTIONS) {
+ 					await newMessage.react(emoji);
+ 				}
+ 				
+ 				if (Math.random() > 0.8) {
+ 					newMessage.react('👺');
+ 				} else {
+ 					newMessage.react('😡');
+ 				}
+ 			}
 		}
 	}
 
