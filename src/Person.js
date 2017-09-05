@@ -164,7 +164,7 @@ class Person {
 
 		let allMutes = document.mutes;
 		let recentMutes = allMutes.filter(mute => {
-			return time() - mute.date < 1000 * 60 * 60 * 24 * 30;
+			return time() - mute.date < 1000 * 60 * 60 * 24 * 30; // TODO: Ignore warns
 		});
 
 		let muteLengthHours = recentMutes.length === 0 ? 0.5 : 2 ** (recentMutes.length -1);

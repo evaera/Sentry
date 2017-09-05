@@ -101,7 +101,7 @@ class AutoModerator {
 	}
 	
 	writeFilter() {
-		fs.writeFile(path.join(__dirname, "filter.json"), JSON.stringify(filter), () => {});
+		fs.writeFile(path.join(__dirname, "..", "data", "filter.json"), JSON.stringify(filter), () => {});
 	}
 	
 	processCommand(message) {
