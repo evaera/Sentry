@@ -33,7 +33,7 @@ class EventCommand extends Command {
 		
 		Sentry.guild.channels.get(process.env.EVENT_CHANNEL).overwritePermissions(participantRole, { 'READ_MESSAGES': true });
 		
-		let announceMessage = await Sentry.guild.channels.get(process.env.ANNOUNCEMENT_CHANNEL).send(`@ everyone ${args.name}\n\nClick the reaction below to join in on the event! You can also use the \`;join\` or \`;leave\` commands.`);
+		let announceMessage = await Sentry.guild.channels.get(process.env.ANNOUNCEMENT_CHANNEL).send(`@everyone ${args.name}\n\nClick the reaction below to join in on the event! You can also use the \`;join\` or \`;leave\` commands.`);
 		await announceMessage.react('✅');
 		
 		Sentry.setEventAnnouncementMessage(announceMessage.id);

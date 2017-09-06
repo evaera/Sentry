@@ -4,22 +4,40 @@ const Command = require('../Command');
 const Person = require('../../Person.js');
 
 module.exports =
-class EventOverCommand extends Command {
+class EventCommand extends Command {
 	constructor(client) {
 		super(client, {
-			name: 'eventover',
+			name: 'event',
 			aliases: [],
-			description: "Event over"
+			description: "Event channel",
+			
+			args: [
+				{
+					key: 'name',
+					prompt: 'Event announcement:',
+					type: 'string',
+					infinite: true
+				}
+			]
 		});
 	}
 
 	async run(msg, args) {
+		args.name = args.name.join(' ');
+		
 		if (Sentry.guild.roles.find('name', "Event Participant")) {
 			await Sentry.guild.roles.find('name', "Event Participant").delete();
 		}
 		
-		let announceMessage = await Sentry.guild.channels.get(process.env.ANNOUNCEMENT_CHANNEL).send(`The event has ended. Thanks for participating!`);
+		let participantRole = await Sentry.guild.createRole({ data: { name: "Event Participant" } });
 		
-		msg.reply("Event ended");
+		Sentry.guild.channels.get(process.env.EVENT_CHANNEL).overwritePermissions(participantRole, { 'READ_MESSAGES': true });
+		
+		let announceMessage = await Sentry.guild.channels.get(process.env.ANNOUNCEMENT_CHANNEL).send(`@ everyone ${args.name}\n\nClick the reaction below to join in on the event! You can also use the \`;join\` or \`;leave\` commands.`);
+		await announceMessage.react('✅');
+		
+		Sentry.setEventAnnouncementMessage(announceMessage.id);
+		
+		msg.reply("Event started");
 	}
 }
