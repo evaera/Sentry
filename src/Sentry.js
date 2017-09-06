@@ -68,9 +68,9 @@ class Sentry {
 			if (typeof this.IDs === "undefined" || !this.IDs) {
 				this.IDs = [];
 			}
-		} catch (e) {
-			console.log(e);
-		}
+		} catch (e) {}
+		
+		this.EventMessageId = '';
 	}
 	
 	onReady() {
@@ -124,6 +124,10 @@ class Sentry {
 	async onReactionAdd(reaction, user) {
 		let reactor = await Person.new(user.id);
 		if (!reactor) return;
+		
+		if (reaction.emoji.name === '✅' && reaction.message.id === Sentry.EventMessageId) {
+			reactor.member.addRole(this.guild.roles.find('name', "Event Participant"));
+		}
 
 		if (!reactor.isModerator()) {
 			return;
@@ -360,5 +364,9 @@ class Sentry {
 				]
 			}}).catch(()=>{});
 		});
+	}
+	
+	setEventAnnouncementMessage(id) {
+		Sentry.EventMessageId = id;
 	}
 }

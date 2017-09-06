@@ -14,6 +14,8 @@ class Command extends Commando.Command {
 
 	hasPermission(msg) {
 		if (this.name === "request") return true;
+		if (this.name === "join") return true;
+		if (this.name === "leave") return true;
 		for (let roleId of process.env.ADMIN_ROLES.split(',')) {
 			if (msg.member.roles.has(roleId)) {
 				return true;
