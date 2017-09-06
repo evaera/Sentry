@@ -14,6 +14,10 @@ class LeaveEventCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (!Sentry.guild.roles.find('name', "Event Participant")) {
+			return msg.reply("No event currently active.");
+		}
+		
 		msg.member.removeRole(Sentry.guild.roles.find('name', "Event Participant"));
 		msg.reply("Removed you from the event channel.");
 	}

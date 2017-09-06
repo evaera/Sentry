@@ -14,6 +14,10 @@ class JoinEventCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (!Sentry.guild.roles.find('name', "Event Participant")) {
+			return msg.reply("No event currently active.");
+		}
+		
 		msg.member.addRole(Sentry.guild.roles.find('name', "Event Participant"));
 		msg.reply("Added you to the event channel.");
 	}

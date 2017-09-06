@@ -14,6 +14,10 @@ class EventOverCommand extends Command {
 	}
 
 	async run(msg, args) {
+		if (msg.member.roles.has(process.env.TRIAL_MOD_ROLE)) { // trial moderator
+			return msg.reply("You don't have permission to use this command. Please ask a Server Moderator to assist you.");
+		}
+		
 		if (Sentry.guild.roles.find('name', "Event Participant")) {
 			await Sentry.guild.roles.find('name', "Event Participant").delete();
 		}
