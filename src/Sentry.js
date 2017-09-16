@@ -353,7 +353,7 @@ class Sentry {
 					{
 						name: "User",
 						inline: true,
-						value: !message.author.bot ? message.member.displayName : message.author.username + " [BOT]"
+						value: message.member !== null ? message.member.displayName : message.author.username + (message.author.bot ? " [BOT]" : "")
 					},
 					{
 						name: "Channel",

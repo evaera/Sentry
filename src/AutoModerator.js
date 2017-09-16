@@ -165,6 +165,7 @@ class AutoModerator {
 		}
 		
 		if (message.author.bot) return;
+		if (!message.member) return;
 	
 		for (let role of ignoreRoles) {
 			if (message.member.roles.has(role)) {
