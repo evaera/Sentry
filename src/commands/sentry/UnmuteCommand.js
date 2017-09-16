@@ -14,18 +14,26 @@ class UnmuteCommand extends Command {
 					key: 'user',
 					prompt: 'User',
 					type: 'member'
+				},
+				{
+					key: 'reason',
+					prompt: 'Please specify the reason for unmute (will be saved in history)',
+					type: 'string',
+					infinite: true
 				}
 			]
 		});
 	}
 
 	async run(msg, args) {
+		args.reason = args.reason.join(' ');
+		
 		let person = await Person.new(args.user.id);
 		if (!person) {
 			return msg.reply("An error occurred");
 		}
 		if (await person.isMuted()) {
-			person.unmute(msg.member.id, true, msg.channel);
+			person.unmute(msg.member.id, true, msg.channel, `********************************\n\nUnmuted by ${msg.member.displayName}: ${args.reason}`);
 			if (await person.isVoiceMuted()) person.unVoiceMute();
 		} else if (await person.isVoiceMuted()) {
 			person.unVoiceMute();

@@ -166,7 +166,7 @@ class Person {
 		let recentMutes = allMutes.filter(mute => {
 			if (mute.kick === 1 || mute.warn === 1) return false;
 			
-			return time() - mute.date < 1000 * 60 * 60 * 24 * 30; // TODO: Ignore warns
+			return time() - mute.date < 1000 * 60 * 60 * 24 * 30;
 		});
 
 		let muteLengthHours = recentMutes.length === 0 ? 0.5 : 2 ** (recentMutes.length -1);
@@ -262,9 +262,14 @@ class Person {
 		}, channel);
 	}
 
-	async unmute(who, early, channel) {
+	async unmute(who, early, channel, reason) {
 		let document = await this.getDocument();
 		delete document.muted;
+		
+		if (early && reason) {
+			document.mutes[ document.mutes.length - 1].reason += "\n\n" + reason;
+		}
+		
 		this.setDocument(document);
 
 		await this.member.removeRole(process.env.MUTED_ROLE);
