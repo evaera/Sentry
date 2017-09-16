@@ -71,6 +71,10 @@ class Sentry {
 		} catch (e) {}
 		
 		this.EventMessageId = '';
+		
+		////
+		
+		this.voiceMovements = {};
 	}
 	
 	onReady() {
@@ -261,6 +265,30 @@ class Sentry {
 			channel.send({embed});
 		}
 	}
+	
+	async registerVoiceMovement(id) {
+		if (typeof this.voiceMovements[id] === 'undefined') {
+			this.voiceMovements[id] = [];
+		}
+		
+		this.voiceMovements[id].push(time());
+		
+		let numRecentMoves = 0;
+		for (let moveTime of this.voiceMovements[id]) {
+			if (time() - moveTime < 5000) {
+				numRecentMoves++;
+			}
+		}
+		
+		if (numRecentMoves > 5) {
+			this.voiceMovements[id] = [];
+			
+			let person = await Person.new(id);
+			if (!person) return;
+			
+			person.mute("You are moving voice channels to quickly!", this.bot.user.id)
+		}
+	}
 
 	hookUpLogEvents() {
 		this.bot.on('guildMemberAdd', member => {
@@ -301,6 +329,10 @@ class Sentry {
 					
 					person.member.setMute(await person.isVoiceMuted());
 				})();
+			}
+			
+			if (message !== "") {
+				this.registerVoiceMovement(newMember.user.id);
 			}
 		});
 
