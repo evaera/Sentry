@@ -352,6 +352,11 @@ class Person {
 	}
 	
 	async warn(reason, who, channel) {
+		if (typeof reason === 'object') {
+			reason.evidence = reason.evidence.replace(/`/g, '');
+			reason = `${reason.text}\n\`\`\`\n${reason.evidence}\`\`\``;
+		}
+		
 		let document = await this.getDocument();
 		
 		document.mutes.push({
