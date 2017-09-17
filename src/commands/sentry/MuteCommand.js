@@ -18,15 +18,14 @@ class MuteCommand extends Command {
 				{
 					key: 'reason',
 					prompt: 'Please enter a reason:',
-					type: 'string',
-					infinite: true
+					type: 'string'
 				}
 			]
 		});
 	}
 
 	async run(msg, args) {
-		args.reason = args.reason.join(' ');
+		// args.reason = args.reason.join(' ');
 		
 		let person = await Person.new(args.user.id);
 		if (!person) {

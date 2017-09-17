@@ -19,14 +19,14 @@ class UnmuteCommand extends Command {
 					key: 'reason',
 					prompt: 'Please specify the reason for unmute (will be saved in history)',
 					type: 'string',
-					infinite: true
+					default: 'None'
 				}
 			]
 		});
 	}
 
 	async run(msg, args) {
-		args.reason = args.reason.join(' ');
+		// args.reason = args.reason.join(' ');
 		
 		let person = await Person.new(args.user.id);
 		if (!person) {
