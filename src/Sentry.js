@@ -170,24 +170,20 @@ class Sentry {
 	async expireMutes() {
 		let documents = await this.db.find({ muted: { $lte: time() } });
 
-		if (documents === null) {
-			return;
-		}
-
-		for (let document of documents) {
-			let person = await Person.new(document.id);
-			if (person && await person.isMuted()) await person.unmute(this.bot.user.id, false);
+		if (documents !== null) {
+			for (let document of documents) {
+				let person = await Person.new(document.id);
+				if (person && await person.isMuted()) await person.unmute(this.bot.user.id, false);
+			}
 		}
 		
 		documents = await this.db.find({ voice_muted: { $lte: time() } });
 
-		if (documents === null) {
-			return;
-		}
-
-		for (let document of documents) {
-			let person = await Person.new(document.id);
-			if (person) await person.unVoiceMute(this.bot.user.id, false);
+		if (documents !== null) {
+			for (let document of documents) {
+				let person = await Person.new(document.id);
+				if (person) await person.unVoiceMute(this.bot.user.id, false);
+			}
 		}
 	}
 
