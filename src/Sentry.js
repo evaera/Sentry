@@ -187,7 +187,7 @@ class Sentry {
 
 		for (let document of documents) {
 			let person = await Person.new(document.id);
-			if (person && await person.isVoiceMuted()) await person.unVoiceMute(this.bot.user.id, false);
+			if (person) await person.unVoiceMute(this.bot.user.id, false);
 		}
 	}
 
