@@ -230,7 +230,7 @@ class Sentry {
 				logChannel = process.env.LOG_KICKS;
 				action.color = 0xECF0F1;
 				action.title = `User kicked: <${action.username}>`;
-				action.icon = "http://i.imgur.com/o9VorPw.png";
+				action.icon = "https://i.imgur.com/1Ei8mgm.png";
 				break;
 			case "ban":
 				logChannel = process.env.LOG_KICKS;
