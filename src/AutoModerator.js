@@ -154,7 +154,7 @@ class AutoModerator {
 			this.processCommand(message);
 		}
 
-		if (message.channel.id === '352581203418939395') { // verify channel
+		if (message.channel.id === '360554284661604352') { // verify channel
 			setTimeout( () => {
 				message.delete();
 			}, 1000);
