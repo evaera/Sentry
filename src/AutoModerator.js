@@ -6,8 +6,8 @@ const VaeBotUtil = require('./VaeBotUtil');
 const Person = require('./Person.js');
 
 const ignoreRoles = [
-	"150093661231775744", // Server Moderator
-	"150075195971862528", // Bot
+	"360561922061500417", // Server Moderator
+	"360552153078824962", // Bot
 	"219302502867271690", // Bot Bypass
 ];
 
