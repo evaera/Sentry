@@ -290,7 +290,7 @@ class Sentry {
 			let person = await Person.new(id);
 			if (!person) return;
 			
-			person.mute("You are moving voice channels to quickly!", this.bot.user.id)
+			person.mute("You are moving voice channels too quickly!", this.bot.user.id)
 		}
 	}
 
