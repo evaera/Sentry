@@ -109,7 +109,7 @@ class Sentry {
  			let validAdvert = IsValidAdvert(newMessage.cleanContent);
  			if (!validAdvert || hasPostedRecently) {
  				newMessage.delete();
- 				if (!hasPostedRecently) newMessage.author.send("Please do not post non-ROBLOX links in the advertisement channel.");
+ 				if (!hasPostedRecently) newMessage.author.send("Your advertisement must contain a roblox.com link.");
  				if (hasPostedRecently) newMessage.author.send("You may only post once every 2 hours in the advertisement channel.");
  			} else {
  				for (let emoji of ADVERT_REACTIONS) {
