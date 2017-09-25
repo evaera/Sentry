@@ -122,6 +122,21 @@ class Sentry {
  					newMessage.react('😡');
  				}
  			}
+		} else if (newMessage.channel.id === process.env.BRINGS_YOU_CHANNEL) {
+			for (let messageWord of newMessage.cleanContent.split(' ')) {
+				let isWordAllowed = false;
+				for (let allowedWord of process.env.BRINGS_YOU_WORDS.split(',')) {
+					if (messageWord.toLowerCase().replace(/\W/g, '') === allowedWord) {
+						isWordAllowed = true;
+					}
+				}
+
+				if (!isWordAllowed) {
+					newMessage.delete();
+					break;
+				}
+			}
+			
 		}
 	}
 
@@ -373,6 +388,8 @@ class Sentry {
 			}
 			
 			if (oldMessage.channel.id === process.env.ADVERTISEMENT_CHANNEL && !IsValidAdvert(newMessage.cleanContent)) newMessage.delete();
+
+			if (oldMessage.channel.id === process.env.BRINGS_YOU_CHANNEL) return oldMessage.delete();
 			
 			this.logGuild.channels.get(process.env.LOG_CHAT).send({embed:{
 				color: 0xf1c40f,
