@@ -120,7 +120,7 @@ class Person {
 		this.member.setMute(true);
 		
 		this.user.send({embed:{
-			title: "You've been voice-muted in the Roblox Discord server",
+			title: "You've been voice-muted in " + Sentry.guild.name,
 			color: 0xF1C40F,
 			thumbnail: {
 				url: "http://i.imgur.com/7B2vj52.png"
@@ -193,7 +193,7 @@ class Person {
 		this.member.setMute(true);
 
 		this.user.send({embed:{
-			title: "You've been muted in the Roblox Discord server",
+			title: "You've been muted in " + Sentry.guild.name,
 			color: 0xe74c3c,
 			thumbnail: {
 				url: "http://i.imgur.com/6c8nq8C.png"
@@ -310,7 +310,7 @@ class Person {
 		if (ban) {
 			try {
 				await this.user.send({embed:{
-					title: "You have been banned from the Roblox Discord server",
+					title: "You have been banned from " + Sentry.guild.name,
 					color: 0xc0392b,
 					thumbnail: {
 						url: "http://i.imgur.com/YtSakNq.png"
@@ -333,7 +333,7 @@ class Person {
 		} else {
 			try {
 				await this.user.send({embed:{
-					title: "You have been kicked from the Roblox Discord server",
+					title: "You have been kicked from " + Sentry.guild.name,
 					color: 0xc0392b,
 					thumbnail: {
 						url: "http://i.imgur.com/YtSakNq.png"
@@ -375,7 +375,7 @@ class Person {
 		
 		try {
 			await this.user.send({embed:{
-				title: "You have been warned in the Roblox Discord server",
+				title: "You have been warned in " + Sentry.guild.name,
 				color: 0xFF9000,
 				thumbnail: {
 					url: "http://i.imgur.com/YtSakNq.png"
