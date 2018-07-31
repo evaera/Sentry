@@ -22,7 +22,7 @@ class Sentry {
 		this.bot = new Discord.Client({
 			unknownCommandResponse: false,
 			commandPrefix: ';',
-			owner: ['113691352327389188', '242727621518032896']
+			owner: ['113691352327389188']
 		});
 		
 		this.autoModerator = new AutoModerator(this.bot);
