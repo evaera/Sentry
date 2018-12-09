@@ -13,7 +13,7 @@ Feel free to fork and make it your own. But you probably shouldn't.
 - This moderation bot doesn't work in more than one server at once. Each instance of this bot can only handle one server.
 - The code is largely undocumented and obscure.
 
-## Original Authors
+## Authors
 This bot was originally created by [evaera](https://github.com/evaera) and [shayner32](https://github.com/PhoenixShay) in July of 2017.
 
 ## Configuration
